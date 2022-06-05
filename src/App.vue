@@ -1,28 +1,68 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="todoapp">
+    <TodoHeader @create="createFn"></TodoHeader>
+    <TodoMain :arr="showArr" @del="deleteFn"></TodoMain>
+    <TodoFooter
+      :farr="showArr"
+      @changeType="typeFn"
+      @clear="clearFn"
+    ></TodoFooter>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import './styles/base.css'
+import './styles/index.css'
+import TodoHeader from './components/TodoHeader.vue'
+import TodoMain from './components/TodoMain.vue'
+import TodoFooter from './components/TodoFooter.vue'
 export default {
-  name: 'App',
+  data() {
+    return {
+      list: [
+        { id: 100, name: '吃饭', isDone: true },
+        { id: 201, name: '睡觉', isDone: false },
+        { id: 103, name: '打豆豆', isDone: true },
+      ],
+      getSel: 'All',
+    }
+  },
+  methods: {
+    createFn(taskName) {
+      let id =
+        this.list.length === 0 ? 100 : this.list[this.list.length - 1].id + 1
+      this.list.push({
+        id: id,
+        name: taskName,
+        isDone: false,
+      })
+    },
+    deleteFn(theId) {
+      let index = this.list.findIndex((obj) => obj.id === theId)
+      this.list.splice(index, 1)
+    },
+    typeFn(str) {
+      this.getSel = str
+    },
+    clearFn() {
+      this.list = this.list.filter((obj) => obj.isDone === false)
+    },
+  },
+  computed: {
+    showArr() {
+      if (this.getSel === 'yes') {
+        return this.list.filter((obj) => obj.isDone === true)
+      } else if (this.getSel === 'no') {
+        return this.list.filter((obj) => obj.isDone === false)
+      } else return this.list
+    },
+  },
   components: {
-    HelloWorld
-  }
+    TodoHeader,
+    TodoMain,
+    TodoFooter,
+  },
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
