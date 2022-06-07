@@ -1,6 +1,6 @@
 <template>
   <div class="todoapp">
-    <TodoHeader @create="createFn"></TodoHeader>
+    <TodoHeader @create="createFn" :arr="list"></TodoHeader>
     <TodoMain :arr="showArr" @del="deleteFn"></TodoMain>
     <TodoFooter
       :farr="showArr"
@@ -19,11 +19,7 @@ import TodoFooter from './components/TodoFooter.vue'
 export default {
   data() {
     return {
-      list: [
-        { id: 100, name: '吃饭', isDone: true },
-        { id: 201, name: '睡觉', isDone: false },
-        { id: 103, name: '打豆豆', isDone: true },
-      ],
+      list: JSON.parse(localStorage.getItem('todoList')) || [],
       getSel: 'All',
     }
   },
@@ -61,6 +57,14 @@ export default {
     TodoHeader,
     TodoMain,
     TodoFooter,
+  },
+  watch: {
+    list: {
+      deep: true,
+      handler() {
+        localStorage.setItem('todoList', JSON.stringify(this.list))
+      },
+    },
   },
 }
 </script>
